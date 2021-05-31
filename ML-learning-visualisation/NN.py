@@ -54,7 +54,7 @@ def extract_weight_bias(model):
             bias.append(param)
     return weights, bias
 
-
+# TODO fix - not always layer has to have bias - use only weights??
 def get_layers(model):
     layers = []
     for name, param in model.named_parameters():
