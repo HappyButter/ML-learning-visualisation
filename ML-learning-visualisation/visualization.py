@@ -52,7 +52,37 @@ def create_edge_position_list(layers, node_position_list_x, node_position_list_y
     return edge_position_list_x, edge_position_list_y
 
 
+def create_bias_list(layers, bias):
+    bias_list = [0 for _ in range(layers[0])]
+    for layer_bias in bias:
+        bias_list.extend(layer_bias)
 
+    return bias_list
+
+
+def flatten(list_of_lists):
+    if len(list_of_lists) == 0:
+        return list_of_lists
+    if isinstance(list_of_lists[0], list):
+        return flatten(list_of_lists[0]) + flatten(list_of_lists[1:])
+    return list_of_lists[:1] + flatten(list_of_lists[1:])
+
+
+def create_weights_list(layers, weights):
+    weights_list = []
+    for weights_layer in weights:
+        for weights_from_node in weights_layer:
+            weights_list.extend(weights_from_node)
+    return weights_list
+
+
+# weight / 128 -> should be / 2, but we are dividing by larger number to lose float information
+def get_rgb_from_weight(weight):
+    weight += 1
+    weight = weight / 128
+    weight = 255 - int(weight * 255) * 64
+
+    return "rgb({0},{0},{0})".format(weight)
 
 
 # layers = [4, 20, 20, 3]
