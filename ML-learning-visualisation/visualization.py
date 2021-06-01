@@ -52,57 +52,27 @@ def create_edge_position_list(layers, node_position_list_x, node_position_list_y
     return edge_position_list_x, edge_position_list_y
 
 
+def create_bias_list(layers, bias):
+    bias_list = [0 for _ in range(layers[0])]
+    for layer_bias in bias:
+        bias_list.extend(layer_bias)
+
+    return bias_list
 
 
 
-# layers = [4, 20, 20, 3]
-# dist_x, dist_y = calc_distance_between_nodes(layers)
-# node_position_list_x, node_position_list_y = create_node_position_list(layers, dist_x, dist_y)
-# edge_position_list_x, edge_position_list_y = create_edge_position_list(layers, node_position_list_x, node_position_list_y)
-# print(edge_position_list_y)
-#
-# edge_trace = go.Scatter(
-#     x=edge_position_list_x, y=edge_position_list_y,
-#     line=dict(width=0.5, color='#888'),
-#     hoverinfo='none',
-#     mode='lines')
-#
-#
-# node_trace = go.Scatter(
-#     x=node_position_list_x, y=node_position_list_y,
-#     mode='markers',
-#     hoverinfo='text',
-#     marker=dict(
-#         showscale=True,
-#         # colorscale options
-#         #'Greys' | 'YlGnBu' | 'Greens' | 'YlOrRd' | 'Bluered' | 'RdBu' |
-#         #'Reds' | 'Blues' | 'Picnic' | 'Rainbow' | 'Portland' | 'Jet' |
-#         #'Hot' | 'Blackbody' | 'Earth' | 'Electric' | 'Viridis' |
-#         colorscale='YlGnBu',
-#         reversescale=True,
-#         color=[],
-#         size=10,
-#         colorbar=dict(
-#             thickness=15,
-#             title='Node Connections',
-#             xanchor='left',
-#             titleside='right'
-#         ),
-#         line_width=2))
-#
-# fig = go.Figure(data=[edge_trace, node_trace],
-#              layout=go.Layout(
-#                 title='<br>Neural network structure visualization with Python',
-#                 titlefont_size=16,
-#                 showlegend=False,
-#                 hovermode='closest',
-#                 margin=dict(b=20,l=5,r=5,t=40),
-#                 annotations=[ dict(
-#                     text="Python code: <a href='https://plotly.com/ipython-notebooks/network-graphs/'> https://plotly.com/ipython-notebooks/network-graphs/</a>",
-#                     showarrow=False,
-#                     xref="paper", yref="paper",
-#                     x=0.005, y=-0.002 ) ],
-#                 xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-#                 yaxis=dict(showgrid=False, zeroline=False, showticklabels=False))
-#                 )
-# fig.show()
+def create_weights_list(layers, weights):
+    weights_list = []
+    for weights_layer in weights:
+        for weights_from_node in weights_layer:
+            weights_list.extend(weights_from_node)
+    return weights_list
+
+
+# weight / 128 -> should be / 2, but we are dividing by larger number to lose float information
+def get_rgb_from_weight(weight):
+    weight += 1
+    weight = weight / 128
+    weight = 255 - int(weight * 255) * 64
+
+    return "rgb({0},{0},{0})".format(weight)

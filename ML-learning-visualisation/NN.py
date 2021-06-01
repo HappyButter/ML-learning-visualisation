@@ -7,10 +7,10 @@ class NN:
     def __init__(self):
 
         self.model = torch.nn.Sequential(
-            torch.nn.Linear(4, 20),
+            torch.nn.Linear(4, 5),
             torch.nn.ReLU(),
-            torch.nn.Linear(20, 20),
-            torch.nn.Linear(20, 3),
+            torch.nn.Linear(5, 5),
+            torch.nn.Linear(5, 3),
             torch.nn.Softmax(dim=1)
         )
         self.loss_vector = []
@@ -27,7 +27,7 @@ class NN:
 
     def train(self, train_X, train_y):
 
-        for epoch in range(1000):
+        for epoch in range(20):
             self.optimizer.zero_grad()
             out = self.model(train_X)
             loss = self.criterion(out, train_y)
@@ -66,3 +66,4 @@ def get_layers(model):
 
             layers.append(param.shape[0])
     return layers
+
