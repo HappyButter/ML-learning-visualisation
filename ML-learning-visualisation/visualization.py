@@ -59,8 +59,6 @@ def create_bias_list(layers, bias):
 
     return bias_list
 
-
-
 def create_weights_list(layers, weights):
     weights_list = []
     for weights_layer in weights:

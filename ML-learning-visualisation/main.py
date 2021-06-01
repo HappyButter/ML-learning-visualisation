@@ -109,8 +109,12 @@ def main():
     labels = ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica']
     print(classification_report(test_y.data, predict_y.data, target_names=labels))
 
+    node_colors = create_bias_list(net.layers, net.bias[0])
+
+    edge_colors = create_weights_list(net.layers, net.weights[0])
 
     visualise_ML(net.layers, net.bias, net.weights)
+
 
 
 if __name__ == '__main__':
