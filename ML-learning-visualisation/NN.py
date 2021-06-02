@@ -7,10 +7,10 @@ class NN:
     def __init__(self):
 
         self.model = torch.nn.Sequential(
-            torch.nn.Linear(4, 5),
+            torch.nn.Linear(4, 100),
             torch.nn.ReLU(),
-            torch.nn.Linear(5, 5),
-            torch.nn.Linear(5, 3),
+            torch.nn.Linear(100, 100),
+            torch.nn.Linear(100, 3),
             torch.nn.Softmax(dim=1)
         )
         self.loss_vector = []
@@ -27,7 +27,7 @@ class NN:
 
     def train(self, train_X, train_y):
 
-        for epoch in range(20):
+        for epoch in range(1000):
             self.optimizer.zero_grad()
             out = self.model(train_X)
             loss = self.criterion(out, train_y)
@@ -37,8 +37,8 @@ class NN:
             self.bias.append(bias)
             self.optimizer.step()
 
-            if epoch % 100 == 0:
-                print('number of epoch', epoch, 'loss', loss.item())
+            # if epoch % 100 == 0:
+            #     print('number of epoch', epoch, 'loss', loss.item())
 
             self.loss_vector.append(loss.item())
 
@@ -46,12 +46,13 @@ class NN:
 def extract_weight_bias(model):
     weights = []
     bias = []
-    for name, param in model.named_parameters():
-        param = param.detach().numpy()
+
+    for name, param in model.state_dict().items():
+        p = param.detach().numpy().copy()
         if 'weight' in name:
-            weights.append(param)
+            weights.append(p)
         if 'bias' in name:
-            bias.append(param)
+            bias.append(p)
     return weights, bias
 
 
