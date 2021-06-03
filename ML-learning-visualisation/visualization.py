@@ -6,7 +6,7 @@ import dash_html_components as html
 
 app = dash.Dash()
 
-# TODO get adjust to user screen
+# TODO adjust to user screen
 WINDOW_HEIGHT = 800
 WINDOW_WIDTH = 1400
 
@@ -85,15 +85,27 @@ def get_weight_group(min_range, max_range, weights, edge_positions, threshold):
     edge_pos_x = []
     edge_pos_y = []
     for index, weight in enumerate(weights):
-        if min_range < weight < max_range and abs(weight) > threshold:
-            edge_pos_x.extend(edge_positions[index][0])
-            edge_pos_y.extend(edge_positions[index][1])
+        if min_range < weight < max_range:
+            edge_pos_x.extend([*edge_positions[index][0], None])
+            edge_pos_y.extend([*edge_positions[index][1], None])
     return edge_pos_x, edge_pos_y
 
 
-def visualise_ML(layers, bias, weights, steps_number=1, threshold=0.05):
-    epoch_number = len(bias)
+def get_min_weight(weights):
+    minimum = 1
+    for weight in weights:
+        minimum = min(minimum, np.amin(weight))
+    return minimum
 
+
+def get_max_weight(weights):
+    maximum = -1
+    for weight in weights:
+        maximum = max(maximum, np.amax(weight))
+    return maximum
+
+
+def visualise_ML(layers, bias, weights, epoch_number, steps_size=1, threshold=0.05):
     # Create figure
     fig = go.Figure(layout={"width": WINDOW_WIDTH, "height": WINDOW_HEIGHT})
 
@@ -102,21 +114,23 @@ def visualise_ML(layers, bias, weights, steps_number=1, threshold=0.05):
     node_position_list_x, node_position_list_y = create_node_position_list(layers, dist_x, dist_y)
 
     edge_positions = create_edge_position_list(layers, node_position_list_x, node_position_list_y)
-    # TODO from min to max weight
-    groups_ranges = np.linspace(-1.0, 1.0, num=11)
+    groups = 11
+    for epoch in range(0, epoch_number, steps_size):
+        min_weight = get_min_weight(weights[epoch])
+        max_weight = get_max_weight(weights[epoch])
 
-    for epoch in range(0, epoch_number, steps_number):
+        groups_ranges = np.linspace(min_weight, max_weight, num=groups)
 
         node_colors = create_bias_list(layers, bias[epoch])
         weights_per_epoch = create_weights_list(weights[epoch])
 
         for index, group_range in enumerate(groups_ranges[:-1]):
-
             edge_pos_x, edge_pos_y = get_weight_group(group_range,
                                                       groups_ranges[index + 1],
                                                       weights_per_epoch,
                                                       edge_positions,
                                                       threshold)
+
             fig.add_trace(go.Scattergl(
                 visible=False,
                 x=edge_pos_x, y=edge_pos_y,
@@ -138,7 +152,7 @@ def visualise_ML(layers, bias, weights, steps_number=1, threshold=0.05):
                 size=25,
                 line_width=1)))
 
-    scatter_number_per_epoch = len(groups_ranges)
+    scatter_number_per_epoch = groups
 
     for i in range(scatter_number_per_epoch):
         fig.data[i].visible = True
@@ -154,7 +168,7 @@ def visualise_ML(layers, bias, weights, steps_number=1, threshold=0.05):
             step["args"][0]["visible"][i + j] = True
 
         steps.append(step)
-
+    print(len(steps))
     sliders = [dict(
         active=0,
         currentvalue={"prefix": "epoch: "},
