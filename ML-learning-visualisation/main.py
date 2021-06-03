@@ -5,7 +5,6 @@ from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, classification_report
 
-
 from visualization import visualise_ML
 from NN import NN
 
@@ -34,8 +33,7 @@ def main():
     # labels = ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica']
     # print(classification_report(test_y.data, predict_y.data, target_names=labels))
 
-
-    visualise_ML(net.layers, net.bias, net.weights, 1)
+    visualise_ML(net.layers, net.bias, net.weights, 100,1)
 
 
 
