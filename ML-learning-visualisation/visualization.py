@@ -168,7 +168,7 @@ def visualise_ML(layers, bias, weights, epoch_number, steps_size=1, threshold=0.
             step["args"][0]["visible"][i + j] = True
 
         steps.append(step)
-    print(len(steps))
+
     sliders = [dict(
         active=0,
         currentvalue={"prefix": "epoch: "},
