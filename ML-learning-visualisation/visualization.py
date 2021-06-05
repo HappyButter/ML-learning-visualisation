@@ -77,7 +77,7 @@ def create_weights_list(weights: list):
 def get_rgb_from_weight(weight: float) -> str:
     weight += 1
     weight = weight / 128
-    weight = 255 - int(weight * 255) * 64
+    weight = 255 - int(weight * 255) * 64 - 40
 
     return "rgb({0},{0},{0})".format(weight)
 
@@ -106,19 +106,20 @@ def get_max_weight(weights: list) -> float:
         maximum = max(maximum, np.amax(weight))
     return maximum
 
-def validate_epoch_number_to_draw(epoch_number: list, epoch_number_to_draw: list, max_number:int=50) -> int:
+
+def validate_epoch_number_to_draw(epoch_number: int, epoch_number_to_draw: int, max_number: int = 50) -> int:
     if epoch_number_to_draw < 1:
         return max_number if epoch_number > max_number else epoch_number
     if epoch_number_to_draw > max_number:
         print("max number of epochs to be drawn is {0}".format(max_number))
         return max_number if epoch_number_to_draw > max_number else epoch_number_to_draw
     return epoch_number_to_draw
-        
-    
 
-def visualise_ML(layers: list, bias: list, weights, epoch_number, epoch_number_to_draw:int=-1, threshold:float=0.05):
+
+def visualise_ML(layers: list, bias: list, weights, epoch_number, epoch_number_to_draw: int = -1,
+                 threshold: float = 0.05):
     epoch_number_to_draw = validate_epoch_number_to_draw(epoch_number, epoch_number_to_draw, max_number=100)
-    
+
     # Create figure
     fig = go.Figure(layout={"width": WINDOW_WIDTH, "height": WINDOW_HEIGHT})
 
@@ -128,10 +129,11 @@ def visualise_ML(layers: list, bias: list, weights, epoch_number, epoch_number_t
 
     edge_positions = create_edge_position_list(layers, node_position_list_x, node_position_list_y)
     groups = 11
-    
-    epochs_to_draw_index_list = np.linspace(0, epoch_number, epoch_number_to_draw, dtype=int)
-    
+
+    epochs_to_draw_index_list = np.linspace(0, epoch_number-1, epoch_number_to_draw, dtype=int)
+
     for epoch in epochs_to_draw_index_list:
+
         min_weight = get_min_weight(weights[epoch])
         max_weight = get_max_weight(weights[epoch])
 
@@ -176,7 +178,7 @@ def visualise_ML(layers: list, bias: list, weights, epoch_number, epoch_number_t
         step = dict(
             method="update",
             args=[{"visible": [False] * len(fig.data)},
-                  {"title": "Epoch number: " + str(epochs_to_draw_index_list[i//scatter_number_per_epoch])}],
+                  {"title": "Epoch number: " + str(epochs_to_draw_index_list[i // scatter_number_per_epoch])}],
         )
 
         for j in range(scatter_number_per_epoch):
@@ -201,4 +203,3 @@ def visualise_ML(layers: list, bias: list, weights, epoch_number, epoch_number_t
     ])
 
     app.run_server(debug=True, use_reloader=False)
-

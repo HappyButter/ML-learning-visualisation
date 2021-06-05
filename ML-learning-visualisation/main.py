@@ -34,7 +34,8 @@ def main():
     print(classification_report(test_y.data, predict_y.data, target_names=labels))
 
     # visualize learning process of neutral network
-    visualise_ML(layers=net.layers, bias=net.bias, weights=net.weights, epoch_number=len(net.bias)-1, epoch_number_to_draw=100)
+    visualise_ML(layers=net.layers, bias=net.bias, weights=net.weights,
+                 epoch_number=len(net.bias), epoch_number_to_draw=1000)
 
 
 if __name__ == '__main__':
