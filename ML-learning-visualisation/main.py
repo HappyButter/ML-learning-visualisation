@@ -22,19 +22,18 @@ def main():
     test_y = Variable(torch.Tensor(test_y).long())
 
     # construct and train network
-    net = NN()
+    net = NN(4, 20, 3, 100, 0.01)
     net.train(train_X, train_y)
 
     # test network
     predict_out = net.model(test_X)
     _, predict_y = torch.max(predict_out, 1)
-    # print("confusion_matrix")
-    # print(confusion_matrix(test_y.data, predict_y.data))
-    # labels = ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica']
-    # print(classification_report(test_y.data, predict_y.data, target_names=labels))
+    print("confusion_matrix")
+    print(confusion_matrix(test_y.data, predict_y.data))
+    labels = ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica']
+    print(classification_report(test_y.data, predict_y.data, target_names=labels))
 
-    visualise_ML(net.layers, net.bias, net.weights, 100,1)
-
+    visualise_ML(net.layers, net.bias, net.weights, 100, 5, 0.1)
 
 
 if __name__ == '__main__':

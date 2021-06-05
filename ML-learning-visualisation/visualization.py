@@ -1,3 +1,5 @@
+from typing import Tuple
+
 import numpy as np
 import plotly.graph_objects as go
 import dash
@@ -6,12 +8,11 @@ import dash_html_components as html
 
 app = dash.Dash()
 
-# TODO adjust to user screen
 WINDOW_HEIGHT = 800
 WINDOW_WIDTH = 1400
 
 
-def calc_distance_between_nodes(layers):
+def calc_distance_between_nodes(layers: list) -> Tuple[int, list]:
     amount_of_layers = len(layers) + 2
     dist_x = WINDOW_WIDTH // amount_of_layers
     dist_y = []
@@ -20,7 +21,7 @@ def calc_distance_between_nodes(layers):
     return dist_x, dist_y
 
 
-def create_node_position_list(layers, dist_x, dist_y):
+def create_node_position_list(layers: list, dist_x: int, dist_y: list) -> Tuple[list, list]:
     node_position_list_x = []
     distance_counter = 0
     for layer in layers:
@@ -34,7 +35,7 @@ def create_node_position_list(layers, dist_x, dist_y):
     return node_position_list_x, node_position_list_y
 
 
-def create_edge_position_list(layers, node_position_list_x, node_position_list_y):
+def create_edge_position_list(layers: list, node_position_list_x: list, node_position_list_y: list) -> list:
     edge_positions = []
 
     current_pos = layers[0]
@@ -56,7 +57,7 @@ def create_edge_position_list(layers, node_position_list_x, node_position_list_y
     return edge_positions
 
 
-def create_bias_list(layers, bias):
+def create_bias_list(layers: list, bias: list) -> list:
     bias_list = [0 for _ in range(layers[0])]
     for layer_bias in bias:
         bias_list.extend(layer_bias)
@@ -64,7 +65,7 @@ def create_bias_list(layers, bias):
     return bias_list
 
 
-def create_weights_list(weights):
+def create_weights_list(weights: list):
     weights_list = []
     for weights_layer in weights:
         for weights_from_node in weights_layer:
@@ -73,7 +74,7 @@ def create_weights_list(weights):
 
 
 # weight / 128 -> should be / 2, but we are dividing by larger number to lose float information
-def get_rgb_from_weight(weight):
+def get_rgb_from_weight(weight: float) -> str:
     weight += 1
     weight = weight / 128
     weight = 255 - int(weight * 255) * 64
@@ -81,7 +82,8 @@ def get_rgb_from_weight(weight):
     return "rgb({0},{0},{0})".format(weight)
 
 
-def get_weight_group(min_range, max_range, weights, edge_positions, threshold):
+def get_weight_group(min_range: float, max_range: float, weights: list, edge_positions: list, threshold: float) \
+        -> Tuple[list, list]:
     edge_pos_x = []
     edge_pos_y = []
     for index, weight in enumerate(weights):
@@ -91,21 +93,21 @@ def get_weight_group(min_range, max_range, weights, edge_positions, threshold):
     return edge_pos_x, edge_pos_y
 
 
-def get_min_weight(weights):
+def get_min_weight(weights: list) -> float:
     minimum = 1
     for weight in weights:
         minimum = min(minimum, np.amin(weight))
     return minimum
 
 
-def get_max_weight(weights):
+def get_max_weight(weights: list) -> float:
     maximum = -1
     for weight in weights:
         maximum = max(maximum, np.amax(weight))
     return maximum
 
 
-def visualise_ML(layers, bias, weights, epoch_number, steps_size=1, threshold=0.05):
+def visualise_ML(layers: list, bias: list, weights: list, epoch_number: int, steps_size: int = 1, threshold: float = 0):
     # Create figure
     fig = go.Figure(layout={"width": WINDOW_WIDTH, "height": WINDOW_HEIGHT})
 
