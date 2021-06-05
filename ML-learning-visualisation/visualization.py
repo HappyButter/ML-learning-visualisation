@@ -128,12 +128,14 @@ def visualise_ML(layers: list, bias: list, weights, epoch_number, epoch_number_t
 
     edge_positions = create_edge_position_list(layers, node_position_list_x, node_position_list_y)
     groups = 11
-    for epoch in np.linspace(0, epoch_number, epoch_number_to_draw, dtype=int):
+    
+    epochs_to_draw_index_list = np.linspace(0, epoch_number, epoch_number_to_draw, dtype=int)
+    
+    for epoch in epochs_to_draw_index_list:
         min_weight = get_min_weight(weights[epoch])
         max_weight = get_max_weight(weights[epoch])
 
         groups_ranges = np.linspace(min_weight, max_weight, num=groups)
-
         node_colors = create_bias_list(layers, bias[epoch])
         weights_per_epoch = create_weights_list(weights[epoch])
 
@@ -164,7 +166,6 @@ def visualise_ML(layers: list, bias: list, weights, epoch_number, epoch_number_t
                 color=node_colors,
                 size=25,
                 line_width=1)))
-
     scatter_number_per_epoch = groups
 
     for i in range(scatter_number_per_epoch):
@@ -174,7 +175,8 @@ def visualise_ML(layers: list, bias: list, weights, epoch_number, epoch_number_t
     for i in np.arange(0, len(fig.data), scatter_number_per_epoch):
         step = dict(
             method="update",
-            args=[{"visible": [False] * len(fig.data)}],
+            args=[{"visible": [False] * len(fig.data)},
+                  {"title": "Epoch number: " + str(epochs_to_draw_index_list[i//scatter_number_per_epoch])}],
         )
 
         for j in range(scatter_number_per_epoch):
@@ -184,7 +186,6 @@ def visualise_ML(layers: list, bias: list, weights, epoch_number, epoch_number_t
 
     sliders = [dict(
         active=0,
-        currentvalue={"prefix": "epoch: "},
         steps=steps
     )]
 
