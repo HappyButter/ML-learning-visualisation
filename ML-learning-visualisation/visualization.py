@@ -104,8 +104,19 @@ def get_max_weight(weights):
         maximum = max(maximum, np.amax(weight))
     return maximum
 
+def validate_epoch_number_to_draw(epoch_number, epoch_number_to_draw, max_number=50):
+    if epoch_number_to_draw < 1:
+        return max_number if epoch_number > max_number else epoch_number
+    if epoch_number_to_draw > max_number:
+        print("max number of epochs to be drawn is {0}".format(max_number))
+        return max_number if epoch_number_to_draw > max_number else epoch_number_to_draw
+    return epoch_number_to_draw
+        
+    
 
-def visualise_ML(layers, bias, weights, epoch_number, steps_size=1, threshold=0.05):
+def visualise_ML(layers, bias, weights, epoch_number, epoch_number_to_draw=-1, threshold=0.05):
+    epoch_number_to_draw = validate_epoch_number_to_draw(epoch_number, epoch_number_to_draw, max_number=100)
+    
     # Create figure
     fig = go.Figure(layout={"width": WINDOW_WIDTH, "height": WINDOW_HEIGHT})
 
@@ -115,7 +126,7 @@ def visualise_ML(layers, bias, weights, epoch_number, steps_size=1, threshold=0.
 
     edge_positions = create_edge_position_list(layers, node_position_list_x, node_position_list_y)
     groups = 11
-    for epoch in range(0, epoch_number, steps_size):
+    for epoch in np.linspace(0, epoch_number, epoch_number_to_draw, dtype=int):
         min_weight = get_min_weight(weights[epoch])
         max_weight = get_max_weight(weights[epoch])
 
@@ -146,8 +157,8 @@ def visualise_ML(layers, bias, weights, epoch_number, steps_size=1, threshold=0.
             x=node_position_list_x, y=node_position_list_y,
             mode='markers',
             marker=dict(
+                showscale=True,
                 colorscale='YlGnBu',
-                reversescale=True,
                 color=node_colors,
                 size=25,
                 line_width=1)))
@@ -177,7 +188,9 @@ def visualise_ML(layers, bias, weights, epoch_number, steps_size=1, threshold=0.
 
     fig.update_layout(
         sliders=sliders,
-        showlegend=False
+        showlegend=False,
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)'
     )
 
     app.layout = html.Div([
@@ -185,3 +198,4 @@ def visualise_ML(layers, bias, weights, epoch_number, steps_size=1, threshold=0.
     ])
 
     app.run_server(debug=True, use_reloader=False)
+

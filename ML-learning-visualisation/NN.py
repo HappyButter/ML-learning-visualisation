@@ -7,10 +7,10 @@ class NN:
     def __init__(self):
 
         self.model = torch.nn.Sequential(
-            torch.nn.Linear(4, 100),
+            torch.nn.Linear(4, 20),
             torch.nn.ReLU(),
-            torch.nn.Linear(100, 100),
-            torch.nn.Linear(100, 3),
+            torch.nn.Linear(20, 20),
+            torch.nn.Linear(20, 3),
             torch.nn.Softmax(dim=1)
         )
         self.loss_vector = []

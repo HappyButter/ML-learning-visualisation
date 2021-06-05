@@ -33,7 +33,7 @@ def main():
     # labels = ['Iris-setosa', 'Iris-versicolor', 'Iris-virginica']
     # print(classification_report(test_y.data, predict_y.data, target_names=labels))
 
-    visualise_ML(net.layers, net.bias, net.weights, 100,1)
+    visualise_ML(layers=net.layers, bias=net.bias, weights=net.weights, epoch_number=len(net.bias)-1, epoch_number_to_draw=100)
 
 
 
