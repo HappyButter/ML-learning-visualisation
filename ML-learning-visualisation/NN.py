@@ -42,6 +42,7 @@ class NN:
         self.epoch_number = epoch_number
         self.model = torch.nn.Sequential(
             torch.nn.Linear(n_in, n_hidden1),
+            torch.nn.Linear(n_hidden1, n_hidden1),
             torch.nn.ReLU(),
             torch.nn.Linear(n_hidden1, n_out),
             torch.nn.Softmax(dim=1)
