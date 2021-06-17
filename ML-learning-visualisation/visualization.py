@@ -162,8 +162,7 @@ def get_rgb_from_weight(weight: float) -> str:
     """
     weight += 1
     weight = weight / 128
-    weight = 255 - int(weight * 255) * 64 - 40
-
+    weight = min(max(255 - int(weight * 255) * 64, 0), 200)
     return "rgb({0},{0},{0})".format(weight)
 
 
