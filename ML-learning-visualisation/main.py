@@ -72,4 +72,4 @@ def wine_classification():
 
 if __name__ == '__main__':
     iris_classification()
-    wine_classification()
+    # wine_classification()
